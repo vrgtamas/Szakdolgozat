@@ -136,14 +136,15 @@ public class Registration extends javax.swing.JFrame {
         // https://www.youtube.com/watch?v=79QlZYPOLpw&t=631s
         
         try {
-            String sql = "INSERT INTO `users`(`jelszo`, `felhasznalo`) VALUES (?, ?)";
+            
+            if (txtRegJelszo.getText().equals(txtRegJelszUjra.getText())) {
+                String sql = "INSERT INTO `users`(`jelszo`, `felhasznalo`) VALUES (?, ?)";
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "");
             pst = conn.prepareStatement(sql);
             
             pst.setString(1, txtRegJelszo.getText());
             pst.setString(2, txtRegNev.getText());
             pst.executeUpdate();
-            if (txtRegJelszo.getText() == (txtRegJelszUjra.getText())) {
                 JOptionPane.showMessageDialog(null, "Regisztráció sikeres!");
             } else {
                 JOptionPane.showMessageDialog(null, "A beírt jelszavak nem egyeznek, ellenőrizze!");

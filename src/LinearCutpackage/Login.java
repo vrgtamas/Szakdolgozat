@@ -175,7 +175,7 @@ public class Login extends javax.swing.JFrame {
             else{
             txtFelhasznalo.setText("");
             txtJelszo.setText("");
-                System.out.println("Hibás felhanálónév vagy jelszó!");
+                JOptionPane.showMessageDialog(null, "Hibás felhanálónév vagy jelszó!");
             
             }
             
