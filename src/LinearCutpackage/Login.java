@@ -22,9 +22,13 @@ public class Login extends javax.swing.JFrame {
 
     Connection conn = null;
     ResultSet rs = null;
-    PreparedStatement pst = null;
+    String felhasznalo;
+    String jelszo;
+    
     
     public Login() {
+        this.felhasznalo = txtFelhasznalo.getText();
+        this.jelszo = txtJelszo.getText();
         initComponents();
         this.setLocationRelativeTo(null); // középre igazítja az ablakot
     }
@@ -149,8 +153,8 @@ public class Login extends javax.swing.JFrame {
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here:
         
-        String felhasznalo = txtFelhasznalo.getText();
-        String jelszo = txtJelszo.getText();
+        
+        
         
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "");
@@ -168,8 +172,9 @@ public class Login extends javax.swing.JFrame {
                 
                 System.out.println("Bejelentkezés sikeres!");
                 this.dispose();
-                LinearCut newLinearCut = new LinearCut();
-                newLinearCut.setVisible(true);
+                Main newMain = new Main();
+                newMain.setVisible(true);
+                
 
             }
             else{
