@@ -5,10 +5,11 @@
  */
 package LinearCutpackage;
 
+import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 
@@ -27,10 +28,11 @@ public class Login extends javax.swing.JFrame {
     
     
     public Login() {
+        initComponents();
         this.felhasznalo = txtFelhasznalo.getText();
         this.jelszo = txtJelszo.getText();
-        initComponents();
         this.setLocationRelativeTo(null); // középre igazítja az ablakot
+        
     }
 
     /**
@@ -42,33 +44,30 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
+        btnLoginBelep = new javax.swing.JToggleButton();
+        btnUjFelhasznalo = new javax.swing.JToggleButton();
         txtFelhasznalo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnLoginKilep = new javax.swing.JButton();
         txtJelszo = new javax.swing.JPasswordField();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jToggleButton1.setText("Belépés");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLoginBelep.setText("Belépés");
+        btnLoginBelep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                btnLoginBelepActionPerformed(evt);
             }
         });
 
-        jToggleButton2.setText("Új felhasználó");
-        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnUjFelhasznalo.setText("Új felhasználó");
+        btnUjFelhasznalo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton2ActionPerformed(evt);
-            }
-        });
-
-        txtFelhasznalo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFelhasznaloActionPerformed(evt);
+                btnUjFelhasznaloActionPerformed(evt);
             }
         });
 
@@ -76,10 +75,10 @@ public class Login extends javax.swing.JFrame {
 
         jLabel2.setText("Jelszó:");
 
-        jButton1.setText("Kilépés");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLoginKilep.setText("Kilépés");
+        btnLoginKilep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLoginKilepActionPerformed(evt);
             }
         });
 
@@ -100,9 +99,9 @@ public class Login extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(148, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton2)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnLoginKilep, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUjFelhasznalo)
+                    .addComponent(btnLoginBelep, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(143, 143, 143))
         );
         layout.setVerticalGroup(
@@ -117,64 +116,56 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtJelszo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
-                .addComponent(jToggleButton1)
+                .addComponent(btnLoginBelep)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jToggleButton2)
+                .addComponent(btnUjFelhasznalo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnLoginKilep)
                 .addGap(36, 36, 36))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtFelhasznaloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFelhasznaloActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFelhasznaloActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnLoginKilepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginKilepActionPerformed
         // TODO add your handling code here:
         System.exit(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnLoginKilepActionPerformed
 
-    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+    private void btnUjFelhasznaloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUjFelhasznaloActionPerformed
         // TODO add your handling code here:
         
         Registration newRegistration = new Registration();
         newRegistration.setVisible(true);
         dispose();
-        
-        
-        
-        
-        
-    }//GEN-LAST:event_jToggleButton2ActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+    }//GEN-LAST:event_btnUjFelhasznaloActionPerformed
+
+    private void btnLoginBelepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginBelepActionPerformed
         // TODO add your handling code here:
-        
-        
-        
-        
+
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "");
             Statement st = conn.createStatement();
             ResultSet rs=st.executeQuery("select * from users where felhasznalo='"+felhasznalo+"' and jelszo='"+jelszo+"'");
-            
+            felhasznalo=txtFelhasznalo.getText();
+            jelszo=txtJelszo.getText();
             int count = 0;
             while (rs.next()) {                
                 count++;
             }
             
-            if (felhasznalo.equals("") && jelszo.equals("")) {
+            if (felhasznalo.equals("") && jelszo.equals("")) 
+            {
                 JOptionPane.showMessageDialog(null, "Írd be felhasználóneved és jelszavad!", "ERROR", JOptionPane.ERROR_MESSAGE);
-            } else if (count >0){
+            } 
+            else if (count >0)
+            {
                 
                 System.out.println("Bejelentkezés sikeres!");
                 this.dispose();
                 Main newMain = new Main();
                 newMain.setVisible(true);
-                
 
             }
             else{
@@ -185,12 +176,12 @@ public class Login extends javax.swing.JFrame {
             }
             
             
-        } catch (Exception e) {
+        } catch (HeadlessException | SQLException e) {
         }
         
         
         
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+    }//GEN-LAST:event_btnLoginBelepActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,19 +211,18 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton btnLoginBelep;
+    private javax.swing.JButton btnLoginKilep;
+    private javax.swing.JToggleButton btnUjFelhasznalo;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JTextField txtFelhasznalo;
     private javax.swing.JPasswordField txtJelszo;
     // End of variables declaration//GEN-END:variables

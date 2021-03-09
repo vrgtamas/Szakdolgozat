@@ -29,14 +29,12 @@ public class Main extends javax.swing.JFrame {
     DefaultTableModel model;
     
     
-    
-    
-    
     public Main() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -201,8 +199,10 @@ public class Main extends javax.swing.JFrame {
 
     private void btnKilepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKilepActionPerformed
         // TODO add your handling code here:
-        
-        System.exit(0);
+        this.dispose();
+        Login ujLogin = new Login();
+        ujLogin.setVisible(true);
+        //System.exit(0);
     }//GEN-LAST:event_btnKilepActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -290,10 +290,7 @@ public class Main extends javax.swing.JFrame {
     private void SorHozzaAd(String szelesseg, String magassag, String falvastagsag, String hossz)
     {
         model = (DefaultTableModel) tblAdatok.getModel();
-        
         String[] sor = {szelesseg, magassag, falvastagsag, hossz};
-        
-        
         model.addRow(sor);
         
     }
