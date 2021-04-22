@@ -8,9 +8,7 @@ package LinearCutpackage;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
@@ -46,6 +44,7 @@ public class Registration extends javax.swing.JFrame {
         txtRegJelszUjra = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Regisztáció");
 
         jLabel1.setText("Név:");
 
@@ -133,7 +132,7 @@ public class Registration extends javax.swing.JFrame {
 
     private void txtRegOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRegOkActionPerformed
         // TODO add your handling code here:
-        // https://www.youtube.com/watch?v=79QlZYPOLpw&t=631s
+        
         
         try {
             
@@ -146,11 +145,13 @@ public class Registration extends javax.swing.JFrame {
             pst.setString(2, txtRegNev.getText());
             pst.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Regisztráció sikeres!");
+                this.dispose();
+                Login newLogin = new Login();
+                newLogin.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "A beírt jelszavak nem egyeznek, ellenőrizze!");
             }
-            
-           
+             
         } catch (SQLException e) {
             
             JOptionPane.showMessageDialog(null, "Hiba az adatok rögzítésekor!");

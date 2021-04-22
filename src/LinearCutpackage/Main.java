@@ -5,6 +5,13 @@
  */
 package LinearCutpackage;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,6 +19,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+
 
 /**
  *
@@ -27,6 +36,12 @@ public class Main extends javax.swing.JFrame {
     String user = "root";
     String password = "";
     DefaultTableModel model;
+    String munkaszam;
+    String szeles;
+    String mag;
+    String falv;
+    String hosszu;
+    String db;
     
     
     public Main() {
@@ -56,13 +71,16 @@ public class Main extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         btnHozzaad = new javax.swing.JButton();
         btnKilep = new javax.swing.JButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jTextField2 = new javax.swing.JTextField();
+        txtMunkaszam = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         lblBejelentkezett = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtDarabszam = new javax.swing.JTextField();
+        btnMunkalapGen = new javax.swing.JButton();
+        btnSorTorol = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("LinearCut ");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -74,17 +92,19 @@ public class Main extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Szélesség (mm)", "Magasság (mm)", "Falvastagság (mm)", "Hossz (mm)"
+                "Szélesség (mm)", "Magasság (mm)", "Falvastagság (mm)", "Hossz (mm)", "Darabszám"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, true
+                false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblAdatok.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tblAdatok.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(tblAdatok);
 
         jLabel1.setText("Szélesség (mm)");
@@ -96,6 +116,7 @@ public class Main extends javax.swing.JFrame {
         jLabel4.setText("Hossz (mm)");
 
         btnHozzaad.setText("Hozzáadás");
+        btnHozzaad.setEnabled(false);
         btnHozzaad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHozzaadActionPerformed(evt);
@@ -109,89 +130,113 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jToggleButton1.setText("Munkalap generálása");
+        txtMunkaszam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtMunkaszamKeyReleased(evt);
+            }
+        });
 
         jLabel5.setText("Munkaszám:");
 
-        jLabel7.setText("Bejelentkezve:");
+        jLabel6.setText("Darabszám");
+
+        btnMunkalapGen.setText("Munkalap generálása");
+        btnMunkalapGen.setEnabled(false);
+        btnMunkalapGen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMunkalapGenActionPerformed(evt);
+            }
+        });
+
+        btnSorTorol.setText("Sor törlése");
+        btnSorTorol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSorTorolActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(93, 93, 93)
+                        .addComponent(btnHozzaad, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(btnMunkalapGen, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(btnSorTorol, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(280, 280, 280)
+                        .addComponent(btnKilep, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(163, 163, 163)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbSzelesseg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbMagassag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                            .addComponent(jLabel1)
+                            .addComponent(cbSzelesseg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbFalvastagsag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel2)
+                            .addComponent(cbMagassag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtHossz, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lblBejelentkezett, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(36, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(cbFalvastagsag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(txtHossz, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(txtDarabszam, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(275, 275, 275)
-                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnHozzaad, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(105, 105, 105)
-                        .addComponent(btnKilep, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(84, 84, 84))
+                        .addGap(93, 93, 93)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(8, 8, 8)
+                                .addComponent(txtMunkaszam, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(428, 428, 428))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(lblBejelentkezett, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblBejelentkezett, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5)
-                        .addComponent(jLabel7)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel5)
+                    .addComponent(txtMunkaszam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblBejelentkezett, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbSzelesseg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbMagassag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbFalvastagsag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtHossz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnHozzaad, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbSzelesseg, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbMagassag, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbFalvastagsag, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtHossz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDarabszam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnHozzaad)
+                    .addComponent(btnMunkalapGen)
+                    .addComponent(btnSorTorol))
                 .addGap(18, 18, 18)
                 .addComponent(btnKilep)
-                .addContainerGap())
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -202,7 +247,6 @@ public class Main extends javax.swing.JFrame {
         this.dispose();
         Login ujLogin = new Login();
         ujLogin.setVisible(true);
-        //System.exit(0);
     }//GEN-LAST:event_btnKilepActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -223,16 +267,117 @@ public class Main extends javax.swing.JFrame {
             
             
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Hiba!");
+            JOptionPane.showMessageDialog(null, "Hiba!" +ex);
         }
+        
     }//GEN-LAST:event_formWindowOpened
 
     private void btnHozzaadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHozzaadActionPerformed
         // TODO add your handling code here:
         
-        SorHozzaAd(cbSzelesseg.getSelectedItem().toString(), cbMagassag.getSelectedItem().toString(), cbFalvastagsag.getSelectedItem().toString(), txtHossz.getText());
+        SorHozzaAd(cbSzelesseg.getSelectedItem().toString(), cbMagassag.getSelectedItem().toString(), cbFalvastagsag.getSelectedItem().toString(), txtHossz.getText(), txtDarabszam.getText());
         
     }//GEN-LAST:event_btnHozzaadActionPerformed
+
+    private void btnMunkalapGenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMunkalapGenActionPerformed
+        // TODO add your handling code here:
+        
+        munkaszam = txtMunkaszam.getText();
+        
+        Document document = new Document();
+        try {
+            String file = "C:\\Users\\Public\\Documents\\"+munkaszam+".pdf";
+            PdfWriter.getInstance(document,
+            new FileOutputStream(file));
+
+            document.open();
+            
+            PdfPTable fejlec = new PdfPTable(1);
+            PdfPCell cell1 = new PdfPCell(new Paragraph("Darabolási munkalap\n"+munkaszam+""));
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setBorder(PdfPCell.NO_BORDER);
+            
+            PdfPTable cim = new PdfPTable(5);
+            PdfPCell cimcellc0 = new PdfPCell(new Paragraph("Szélesség (mm)"));
+            PdfPCell cimcellc1 = new PdfPCell(new Paragraph("Magasság (mm)"));
+            PdfPCell cimcellc2 = new PdfPCell(new Paragraph("Falvastagság (mm)"));
+            PdfPCell cimcellc3 = new PdfPCell(new Paragraph("Hossz \n(mm)"));
+            PdfPCell cimcellc4 = new PdfPCell(new Paragraph("Darabszám (db)"));
+            
+            cimcellc0.setBorder(PdfPCell.NO_BORDER);
+            cimcellc1.setBorder(PdfPCell.NO_BORDER);
+            cimcellc2.setBorder(PdfPCell.NO_BORDER);
+            cimcellc3.setBorder(PdfPCell.NO_BORDER);
+            cimcellc4.setBorder(PdfPCell.NO_BORDER);
+            
+            cimcellc0.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cimcellc1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cimcellc2.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cimcellc3.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cimcellc4.setHorizontalAlignment(Element.ALIGN_CENTER);
+            
+            cim.addCell(cimcellc0);
+            cim.addCell(cimcellc1);
+            cim.addCell(cimcellc2);
+            cim.addCell(cimcellc3);
+            cim.addCell(cimcellc4);
+
+            cim.setSpacingBefore(30f);
+            
+            fejlec.addCell(cell1);
+            document.add(fejlec);
+            document.add(cim);
+
+            PdfPTable table = new PdfPTable(5); // 5 oszlop.
+            table.setSpacingBefore(40f);
+            
+            for (int row = 0; row < tblAdatok.getRowCount(); row++) {
+                    for (int col = 0; col < tblAdatok.getColumnCount(); col++) {
+                        
+                        PdfPCell cellRow = new PdfPCell(new Paragraph((String) tblAdatok.getValueAt(row, col)));
+                        cellRow.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cellRow.setBorder(PdfPCell.NO_BORDER);
+                        table.addCell(cellRow);
+                }
+            }
+            
+            document.add(table);
+            document.close();
+            JOptionPane.showMessageDialog(this, "Munkalap kész!");
+        
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+    }//GEN-LAST:event_btnMunkalapGenActionPerformed
+
+    private void btnSorTorolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSorTorolActionPerformed
+        // TODO add your handling code here:
+        model = (DefaultTableModel) tblAdatok.getModel();
+        
+        if (tblAdatok.getSelectedRowCount() == 1) {
+            model.removeRow(tblAdatok.getSelectedRow());
+        } else {
+            if (tblAdatok.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Üres a táblázat!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Válasszon ki egy sort a törléshez!");
+            }
+        }
+        
+    }//GEN-LAST:event_btnSorTorolActionPerformed
+
+    private void txtMunkaszamKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMunkaszamKeyReleased
+        // TODO add your handling code here:
+        
+        if (txtMunkaszam.getText().length() > 0) {
+            btnHozzaad.setEnabled(true);
+            btnMunkalapGen.setEnabled(true);
+        } else {
+            btnHozzaad.setEnabled(false);
+            btnMunkalapGen.setEnabled(false);
+        }
+    }//GEN-LAST:event_txtMunkaszamKeyReleased
 
     /**
      * @param args the command line arguments
@@ -270,6 +415,8 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHozzaad;
     private javax.swing.JButton btnKilep;
+    private javax.swing.JButton btnMunkalapGen;
+    private javax.swing.JButton btnSorTorol;
     private javax.swing.JComboBox<String> cbFalvastagsag;
     private javax.swing.JComboBox<String> cbMagassag;
     private javax.swing.JComboBox<String> cbSzelesseg;
@@ -278,19 +425,19 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblBejelentkezett;
     private javax.swing.JTable tblAdatok;
+    private javax.swing.JTextField txtDarabszam;
     private javax.swing.JTextField txtHossz;
+    private javax.swing.JTextField txtMunkaszam;
     // End of variables declaration//GEN-END:variables
 
-    private void SorHozzaAd(String szelesseg, String magassag, String falvastagsag, String hossz)
+    private void SorHozzaAd(String szelesseg, String magassag, String falvastagsag, String hossz, String darabszam)
     {
         model = (DefaultTableModel) tblAdatok.getModel();
-        String[] sor = {szelesseg, magassag, falvastagsag, hossz};
+        String[] sor = {szelesseg, magassag, falvastagsag, hossz, darabszam};
         model.addRow(sor);
         
     }

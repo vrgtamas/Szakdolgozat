@@ -6,6 +6,7 @@
 package LinearCutpackage;
 
 import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,7 +32,7 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         this.felhasznalo = txtFelhasznalo.getText();
         this.jelszo = txtJelszo.getText();
-        this.setLocationRelativeTo(null); // középre igazítja az ablakot
+        this.setLocationRelativeTo(null); 
         
     }
 
@@ -45,24 +46,18 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        btnLoginBelep = new javax.swing.JToggleButton();
         btnUjFelhasznalo = new javax.swing.JToggleButton();
         txtFelhasznalo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         btnLoginKilep = new javax.swing.JButton();
         txtJelszo = new javax.swing.JPasswordField();
+        btnLoginBelep = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        btnLoginBelep.setText("Belépés");
-        btnLoginBelep.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginBelepActionPerformed(evt);
-            }
-        });
+        setTitle("Bejelentkezés");
 
         btnUjFelhasznalo.setText("Új felhasználó");
         btnUjFelhasznalo.addActionListener(new java.awt.event.ActionListener() {
@@ -73,12 +68,25 @@ public class Login extends javax.swing.JFrame {
 
         jLabel1.setText("Felhasználónév:");
 
-        jLabel2.setText("Jelszó:");
+        jLabel2.setText("Jelszó (4 számjegy):");
 
         btnLoginKilep.setText("Kilépés");
         btnLoginKilep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginKilepActionPerformed(evt);
+            }
+        });
+
+        txtJelszo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtJelszoKeyPressed(evt);
+            }
+        });
+
+        btnLoginBelep.setText("Belépés");
+        btnLoginBelep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginBelepActionPerformed(evt);
             }
         });
 
@@ -98,10 +106,10 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(148, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnLoginKilep, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUjFelhasznalo)
-                    .addComponent(btnLoginBelep, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnLoginKilep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUjFelhasznalo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLoginBelep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(143, 143, 143))
         );
         layout.setVerticalGroup(
@@ -115,9 +123,9 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtJelszo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(btnLoginBelep)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnUjFelhasznalo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLoginKilep)
@@ -143,8 +151,7 @@ public class Login extends javax.swing.JFrame {
 
     private void btnLoginBelepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginBelepActionPerformed
         // TODO add your handling code here:
-
-        try {
+         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "");
             Statement st = conn.createStatement();
             ResultSet rs=st.executeQuery("select * from users where felhasznalo='"+felhasznalo+"' and jelszo='"+jelszo+"'");
@@ -157,31 +164,63 @@ public class Login extends javax.swing.JFrame {
             
             if (felhasznalo.equals("") && jelszo.equals("")) 
             {
-                JOptionPane.showMessageDialog(null, "Írd be felhasználóneved és jelszavad!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Írd be felhasználóneved és jelszavad!", "Hiba!", JOptionPane.ERROR_MESSAGE);
             } 
             else if (count >0)
             {
-                
                 System.out.println("Bejelentkezés sikeres!");
                 this.dispose();
                 Main newMain = new Main();
                 newMain.setVisible(true);
-
             }
             else{
             txtFelhasznalo.setText("");
             txtJelszo.setText("");
                 JOptionPane.showMessageDialog(null, "Hibás felhanálónév vagy jelszó!");
-            
+            }
+
+        } catch (HeadlessException | SQLException e) {
+            System.out.println("hibe" + e);
+        }
+    }//GEN-LAST:event_btnLoginBelepActionPerformed
+
+    private void txtJelszoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtJelszoKeyPressed
+        // TODO add your handling code here:
+        
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/users", "root", "");
+            Statement st = conn.createStatement();
+            ResultSet rs=st.executeQuery("select * from users where felhasznalo='"+felhasznalo+"' and jelszo='"+jelszo+"'");
+            felhasznalo=txtFelhasznalo.getText();
+            jelszo=txtJelszo.getText();
+            int count = 0;
+            while (rs.next()) {                
+                count++;
             }
             
-            
+            if (felhasznalo.equals("") && jelszo.equals("")) 
+            {
+                JOptionPane.showMessageDialog(null, "Írd be felhasználóneved és jelszavad!", "Hiba!", JOptionPane.ERROR_MESSAGE);
+            } 
+            else if (count >0)
+            {
+                System.out.println("Bejelentkezés sikeres!");
+                this.dispose();
+                Main newMain = new Main();
+                newMain.setVisible(true);
+            }
+            else{
+            txtFelhasznalo.setText("");
+            txtJelszo.setText("");
+                JOptionPane.showMessageDialog(null, "Hibás felhanálónév vagy jelszó!");
+            }
+
         } catch (HeadlessException | SQLException e) {
+            System.out.println("hibe" + e);
         }
-        
-        
-        
-    }//GEN-LAST:event_btnLoginBelepActionPerformed
+        }
+    }//GEN-LAST:event_txtJelszoKeyPressed
 
     /**
      * @param args the command line arguments
@@ -217,7 +256,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton btnLoginBelep;
+    private javax.swing.JButton btnLoginBelep;
     private javax.swing.JButton btnLoginKilep;
     private javax.swing.JToggleButton btnUjFelhasznalo;
     private javax.swing.JButton jButton1;
